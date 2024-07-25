@@ -57,6 +57,8 @@ class App {
 
         Quotation quotation = new Quotation(id, content, authorName);
         quotations.add(quotation);
+
+        System.out.printf("%d번 명언이 등록되었습니다.\n", lastQuotationId);
     }
 
     void actionList() {

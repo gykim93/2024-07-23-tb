@@ -8,6 +8,7 @@ public class Rq {
     String action;
     String queryString;
     Map<String, String> paramsMap;
+
     Rq(String cmd) {
         paramsMap = new HashMap<>();
 
@@ -15,7 +16,13 @@ public class Rq {
 
         String[] cmdBits = cmd.split("\\?", 2);
         action = cmdBits[0].trim();
+
+        if (cmdBits.length == 1) {
+            return;
+        }
+
         queryString = cmdBits[1].trim();
+
 
         String[] queryStringBits = queryString.split("&");
 
@@ -26,19 +33,21 @@ public class Rq {
             String paramName = queryParamStrBits[0];
             String paramValue = queryParamStrBits[1];
 
-            paramsMap.put(paramName,paramValue);
+            paramsMap.put(paramName, paramValue);
         }
     }
-    String getAction(){
+
+    String getAction() {
         return action;
     }
-    public int getParamAsInt(String paramName, int defaultValue){
+
+    public int getParamAsInt(String paramName, int defaultValue) {
         String paramValue = paramsMap.get(paramName);
-        if (paramValue != null){
-            try{
+
+        if (paramValue != null) {
+            try {
                 return Integer.parseInt(paramValue);
-            } catch (NumberFormatException e){
-                return defaultValue;
+            } catch (NumberFormatException e) {
             }
         }
         return defaultValue;
