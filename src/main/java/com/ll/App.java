@@ -6,11 +6,11 @@ import java.util.Scanner;
 
 class App {
     Scanner scanner;
-    int lastQuotationid;
+    int lastQuotationId;
     List<Quotation> quotations;
 
     App() {
-        lastQuotationid = 0;
+        lastQuotationId = 0;
         scanner = new Scanner(System.in);
         quotations = new ArrayList<>();
     }
@@ -27,7 +27,7 @@ class App {
                 break;
             } else if (cmd.equals("등록")) {
                 actionWrite();
-                System.out.printf("%d번 명언이 등록되었습니다.\n", lastQuotationid);
+                System.out.printf("%d번 명언이 등록되었습니다.\n", lastQuotationId);
             } else if (cmd.equals("목록")) {
                 actionList();
             } else if (cmd.startsWith("삭제?")) {
@@ -35,6 +35,7 @@ class App {
             }
         }
     }
+
     void actionWrite() {
         System.out.print("명언 : ");
         String content = scanner.nextLine();
@@ -42,9 +43,9 @@ class App {
         System.out.print("작가 : ");
         String authorName = scanner.nextLine();
 
-        lastQuotationid++;
+        lastQuotationId++;
 
-        int id = lastQuotationid;
+        int id = lastQuotationId;
 
         Quotation quotation = new Quotation(id, content, authorName);
         quotations.add(quotation);
@@ -63,7 +64,17 @@ class App {
             System.out.printf("%d / %s / %s\n", quotation.id, quotation.authorName, quotation.content);
         }
     }
-    void actionRemove(String cmd){
+
+    void actionRemove(String cmd) {
+        int id = getParamAsInt(cmd, "id", 0);
+        if (id == 0) {
+            System.out.println("id를 정확히 입력해주세요.");
+            return;
+        }
+        System.out.printf("%d번 명언을 삭제합니다\n", id);
+    }
+
+    int getParamAsInt(String cmd, String paramName, int defaultValue) {
         String[] cmdBits = cmd.split("\\?", 2);
         String action = cmdBits[0];
         String qureyString = cmdBits[1];
@@ -74,17 +85,23 @@ class App {
 
         int id = 0;
         for (int i = 0; i < queryStringBits.length; i++) {
-            String queryParamStr =queryStringBits[i];
+            String queryParamStr = queryStringBits[i];
 
             String[] qureyParamStrBits = queryParamStr.split("=", 2);
 
-            String paramName = qureyParamStrBits[0];
+            String _paramName = qureyParamStrBits[0];
             String paramValue = qureyParamStrBits[1];
 
-            if (paramName.equals("id")) {
-                id = Integer.parseInt(paramValue);
+            if (_paramName.equals(paramName)) {
+                try {
+                    // 문제가 없을경우
+                    return Integer.parseInt(paramValue);
+                } catch (NumberFormatException e) {
+                    // 문제가 생긴경우
+                    return defaultValue;
+                }
             }
         }
-        System.out.printf("%d번 명언을 삭제합니다\n", id);
+        return defaultValue;
     }
 }
